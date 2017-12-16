@@ -1,0 +1,85 @@
+What PCA does and  how to use it:
+Linear transformation: (vector) x (scalar) ---> no direction change ( only scale )
+       		       	(vector)x(matrix) ---> change direction and scales it. This is a transformation
+
+PCA -> take input matrix X(nxd)
+       transformation matrix Q (dxd)
+       converts into transformed data matrix Z (nxd)
+       **This also applies when n=1, i.e. X is a vector**
+
+PCA what really does isn't scaling and redirecting just the vector, but instead all the coordinate system.
+Now, how do we choose Q matrix? There is an input, but no target.
+
+Nowadays the inputs, at least at image processing, are large. To give an idea, just the tiny image of the MNIST
+dataset are 28x28, which gives us a 784 dimensions. The normal images at instagram, FB, Google, etc. have hundred
+of thousands of dimensions (or even millions).
+We can "reduce" the dimensionality, but can't reduce to an arbitraty dimension from X.
+***GOAL: REDUCE THE DIMENSION, BUT KEPP AS MUCH INFORMATION AS POSSIBL***
+Suppouse the mnist dataset, which have 784 dimensions, and we do a transformation that reduce it to 2 dimenions.
+We want these 2 dimensions to have as much information as possible.
+HOW TO MEASURE INFORMATION: VARIANCE
+Deterministic variable -> 0 variance. (measuring it provides no new information)
+More variance, more new information.
+In the resulting matrix Z, we want the first column to have the most important information,
+the second information the second most important, and so on.
+So that if we want to reduce dimensions, just take the first two columns, and get the most information
+
+Decorrelation is another thing that PCA does.
+
+	      Correlation --> some data is redundant, so that we can predict Y from X.
+	      If we have some data in a coordinate system of v1 and v2 (rotated and scaled from o ur X and Y),
+	      what we can do is to rotate and scale (really doing a transformation Q) our coordinate system
+	      X and Y to be aligned with v1 and v2, in order to remove the correlation, so that the data
+	      have higher variance, and to gather valuable information.
+
+	      NEW QUESTION: How do we find the correct transformation Q?
+
+Visualization:
+	Once we have most of the information ( typically the first two columns ) of Z, we can plot that data.
+Pre-processing:
+	Data --> Noisy (small compared to the true pattern).
+	The last columns of Z use to be the noisy parts.
+	The transformed data then could be feed into another model of supervised learning.
+	This way, we can prevent to fit to noise.
+
+Latent Variables:
+       Z could be thought as a latent variable (The underlying cause of X)
+       The latent variable makes sense to be uncorrelated ( just independent hidden causes )
+       ****UNCORRELATED DATA DOESNT NECESSARILY MEAN INDEPENDENT, UNLESS THE DISTRIBUTION IS GAUSSIAN****
+       What we assume at PCA is: Data X is a linear combination of hidden causes Z
+       And in PCA linearity goes like:
+       	   - Z = XQ
+	   - X = ZQ^-1
+       Clustering: We thought of latent variables as clusteing identities.
+	
+	
+       
+
+********************************************************************************
+Create a method to do this, math behind it:
+       1. Sigma[X] (Covariance of X): expected value of (X[i] - mu[i])*(X[j] - mu[j])
+       	  	     	****REMEMBER: expected value of x (i.e. E(x)) is jut 1/N * Sum(n=1;n<N;n++)x[n]
+			    if i == j is the regular definition of variance (then variances are along diagonal)
+			    Which gives us a DxD diagonal matrix.
+			    DxD matrix -> eigenvalues and eigenvectors.
+			    **EIGENVECTORS --> VECTORS WHOSE DIRECTIONS AREN'T CHANGED BY MATRIX TRANSFORMATION
+			    **EIGENVALUES -->  SCALE FACTOR EQUAL TO THE MATRIX TRANSFORMATION.
+			    A*v=lambda*v
+			    There're D eigenvalues corresponding to eigenvectors. ( 0 is the minimum ) 
+
+			    ***VARIANCE: Expectation of the squared deviation of a random variable from its mean. (sigma)**2
+			    ***COVARIANCE: Measure of joint variability of two random variables.
+
+The method for computing the covariance for unbiased models, is just to change N with N-1 in the scale factor.
+
+	2. Sort up all the eigenvalues and eigenvectors of the matrix Sigma[X] into another matrix, in descending order in the matrix.
+	   	- V = [[11...1][v[1],v[2],...,v[D]][11...1]]
+		- A = [[a[1],0,...,0][0,a[2],...,0][0,0,a[3],...,0]...[0,0,...,a[D]]]    a is lambda, and A is big lambda.
+
+
+	3. Through doing some calculus, we start from Sigma[Z]*V = V*A ( remember that Z is the transformed data X*Q ( X is the data and Q is the transformation))
+	   we can prove that Sigma[Z] is just Q*Sigma[X]*Q. Now making Q = V ( the eigenvectors matrix ), we can prove that Sigma[Z] is just A.
+
+	   Since all the elements that are outside the diagonal of Sigma[Z] are 0, we show that the transformed data is not correlated.
+	   Plus, we did sort out V and A in descending order, so the first column has the most variance, i.e. the most information
+	   

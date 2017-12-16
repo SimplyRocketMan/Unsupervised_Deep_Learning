@@ -1,0 +1,23 @@
+What we will do:
+     Principal component analysis
+     t-SNE (Non-linear dimensionality reduction)
+     Autoencoders
+     Restricted Boltzman Machines
+     Use t-SNE to visualize what deep autoencoders/RBM have learned.
+What we should known:
+     Linear and logistic regress
+     Regression and classification
+     Find optimal weigths ( d(output)/d(weights) = 0 || grad descent )
+     Softmax function for finding >2 classes
+     Improve backprop with: MOMENTUM; ADAPTATIVE LR; GPU; ...
+     Clusteing (Clustered data is easier to train with)
+     Latent variables
+     Dimensionality reduction, visualization, get help from superv learning from unsup. 
+     
+What can we do:
+     Supv learning -> labels
+     Unsup learning-> no labels
+     Data = signal + noise
+     reducing dim. -> -noise
+     unsup NN -> autoencoders, rbms,...
+     Unsuperv learning --> much more theorical, but can be useful for supervised l.

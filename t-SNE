@@ -1,0 +1,38 @@
+t-SNE:
+	- t : t-distributed (Continous probability distributions used when estimating the mean of a normally distributed popoulation in situations with small sample size and unknown std_dev of the population) 
+	- SNE: Stochastic Neighbour Embedding
+	- Algorithm for non linear dimensionality reduction.
+
+benefits :
+	 - Can overcome of PCA limitations.
+
+Differences with PCA:
+	 - Non linear
+	 - No transformation model
+	 - Modifies the outputs directly in order to minimize the cost function
+	 - No train, can't transform data other than the just fitted data.
+
+Idea:
+	 - Try to preserve distances between each input vector.
+	 - Start with symmetric SNE ( to make more sense ) 
+	 - First create a probability distribution p(i,j)(_sigma is a hyperparam)
+	   p(i,j)=(exp(-L2Norm(x[i]-x[j])**2/2*_sigma**2))/(Sum(k!=l)exp(-L2Norm(x[k]-x[l])**2/2*_sigma**2))
+	 - Second initialize random low-dimensional mapping Y (NxK vector k<<D)
+	 - Define q(i,j) as:
+	   q(i,j) = (exp(-EucNorm(y[i] - y[j])**2))/(Sum(k!=l) exp(-EucNorm(y[k]-y[l])**2))
+
+
+Symmetric SNE:
+	 - Note that p(i,i) = q(i,i) = 0
+	 - Goal: p(i,j) as close to q(i,j) as possible, keeping squared distance.
+	 - How to compare 2 probability distributions: Kullback-Leiber divergence
+	   Cost_Function = KL(P||Q) = Sum(i)Sum(j) p(i,j)*ln(p(i,j)/q(i,j))
+
+Now -> make gradient descent on the Cost_Function. Gradient wrt y (no weights)(output mapping itself)
+    Grad(Cost_Function, wrt:y[i]) = 4*Sum(j)(pi[i,j] - q[i,j])(y[i]-y[j])
+
+
+Probelm with t-SNE --> huge amount of RAM needed. O(N**2), or with sklearn O(N*ln(N))
+
+
+WHAT IS THE BEST SCENARIO TO HELP US VISUALIZE T-SNE? 3D -> 2D.

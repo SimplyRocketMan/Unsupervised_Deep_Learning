@@ -1,0 +1,19 @@
+What PCA actually does --> minimizing objective function
+
+J = for(n=0;n<N;n++) abs(x[n] - x_reconstructed[n])**2
+Full Q would lead to 0 reconstruction error
+Remember that Z = XQ (Z transformed data, X data, Q transformation)
+Then, to reconstruct the data from the Z matrix:
+     x_reconstructed = XQQ**-1 = ZQ**-1
+     QQ**-1 = I
+     Q is orthonormal --> Q**-1 = Q.T
+     x_reconstructed = XQQ.T
+
+Reconstruction:
+	Q[K] is just the first K eigenvectors of the covariance of X (DxK matrix)
+	So Z(=XQ) is now NxK, transformed data with reduced dimensionality.
+	Since we aren't using the entire Q, there'll be an error different to 0.
+	x_reconstructed = XQ[K]Q[K].T is the reconstructed state.
+	re-state objective:
+	J = Sigma[n]*abs(x[n]-Q[K]*Q[K].T*x[n])**2
+	  = Forbenious_norm(X -X*Q[K]*Q[K].T)**2
