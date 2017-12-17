@@ -1,0 +1,57 @@
+AUTOENCODERS:
+	- The supervised-ML models have -->  Train(X,Y) and Predict(X)
+	- What if the NN just predict itself? (i.e. train(X,X))
+	- Consists of 2 parts: the encoders and decoders.
+	  Encoders: X -> Z
+	  Decoders: Z -> X'
+
+
+	We can use cross-entropy or squared error as J.  Both can work out well.
+	Think of images as pixel intensities. (0: no intensity, 1: max intensity )
+	We'll use sigmoid at hidden layer and output layer so that stuff goes
+	      always between 0 and 1.
+
+
+	New idea in autoencoders: Shared Weights. Instead of using another W at the output layer,
+	we just use the transpose of the first layer.
+	Sharing weights --> kindof regularization ( reducing the number of params, thereby reducing change
+	of overfitting.
+
+
+OBJECTIVE FUNCTION:
+	J = Forbenious_Norm(X-X')**2 = F_Norm(X - f(f(X*W)*W.T))**2
+	Rememebr that PCA's cost function was J = F_Norm(X-X*Q*Q.T)**2.
+	So Autoencoders are much like nonlinear PCA, jsut like t-SNE.
+	The difference is that Autoencoders doesn have bias, and doesnt' require that column
+	of W has length 1, orthogonality, order,..
+
+
+DENOISING AUTENCODERS:
+	- This is another method of regularization
+	- With a given dataset, we don't just have to train on that dataset.
+	- That is, if we have an image of a cat, a cat is still a cat if we shift the image,
+	  change the intensity, the constrasts, the luminosity, put a taller cat, etc.
+	- We should modify and append data to imporve generalization
+
+	- Also, just add some noise to the image (X+eps, eps ~ N )
+
+
+STACKED AUTOENCODERS:
+	- Basic algo:
+	     1. You have input X
+	     2. Train an autoencoder on X. Hidden Layer's output is Z[1]
+	     3. Train an autoencoder on Z[1] ( target is Z1 ), the hidden layer's output is Z[2]
+	     3. Repeat.
+	- We want each layer to be a more compact representation of the last one, so each layer
+	  will decrease in size.
+
+	- Note, though, that isn't necessary to have to make the size of the next layer smaller.
+	- Theoretically, if we had N sample, and N hidden units, then we could het a perfect reconstruction
+	  because each of the N columns of W could be responsible for reproducing a different sample
+	- Even though it looks like overfitting, it doesn't
+
+	- One of the most popular process for autoencoders is the Greedy Layer-wise Pretraining.
+	- "Greedy" --> best short-sighted decision. This is helpful with supervised learning.
+	- Last step --> add logstic regression layer to the end. This makes a fully functional DNN.
+	- Because autoencoders put the input near the right answer, the backprop of the following
+	  hidden layer won't take as much. ( Fine tuning ).v
